@@ -3,6 +3,10 @@ import { initAction } from './action';
 
 const initialState = {
   appName: 'ngrx',
+  user:{
+    username:'',
+    isAdmin: false
+  }
 };
 
 function log(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -20,6 +24,9 @@ export const rootReducer = createReducer(initialState,
   on(initAction, (state) => {
     return{
       ...state,
-      isAdmin: true
+      user: {
+        ...state.user,
+        isAdmin: true
+      }
     }
   }));
