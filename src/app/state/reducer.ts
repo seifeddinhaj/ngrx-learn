@@ -1,7 +1,17 @@
-import { ActionReducer, createReducer, MetaReducer, on } from '@ngrx/store';
-import { initAction } from './action';
+import { Action, ActionReducer, createReducer, MetaReducer, on, props } from '@ngrx/store';
+import { User } from '../models/user';
+import { changeUserName, initAction } from './action';
 
-const initialState = {
+
+export interface State {
+  root:RootState
+}
+
+export interface RootState{
+  appName:string;
+  user:User;
+}
+const initialState: RootState = {
   appName: 'ngrx',
   user:{
     username:'',
@@ -9,19 +19,23 @@ const initialState = {
   }
 };
 
-function log(reducer: ActionReducer<any>): ActionReducer<any> {
+function log(reducer: ActionReducer<State>): ActionReducer<State> {
   return (state, action) => {
     const currenState = reducer(state, action)
-    console.log('Action', action)
+    console.groupCollapsed( action.type)
 
     console.log('etat précedent', state)
+    console.log('Action', action)
+
     console.log('etat suivant', currenState)
+    console.groupEnd()
+
     return currenState
   };
 }
 export const metaReducers: MetaReducer[] = [log];
-export const rootReducer = createReducer(initialState,
-  on(initAction, (state) => {
+export const rootReducer = createReducer<RootState,Action>(initialState,
+  on(initAction, (state:RootState) => {
     return{
       ...state,
       user: {
@@ -29,4 +43,14 @@ export const rootReducer = createReducer(initialState,
         isAdmin: true
       }
     }
-  }));
+  }),
+  on(changeUserName, (state:RootState,props) => {
+    return{
+      ...state,
+      user: {
+        ...state.user,
+        username: props.username
+      }
+    }
+  })
+  );
