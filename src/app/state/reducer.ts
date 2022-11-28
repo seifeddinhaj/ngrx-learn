@@ -3,8 +3,9 @@ import { User } from '../models/user';
 import { changeUserName, initAction } from './action';
 
 
+export const ROOT_FEATURE_KEY = 'root'
 export interface State {
-  root:RootState
+  readonly [ROOT_FEATURE_KEY]:RootState
 }
 
 export interface RootState{
