@@ -6,7 +6,7 @@ import { User } from './models/user';
 import { State } from './state/reducer';
 import { getUser } from './state/selectors';
 
-import  {RootActions} from './state/action'
+import  {loadUsers, RootActions} from './state/action'
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -26,6 +26,10 @@ export class AppComponent implements OnInit {
   }
   changeUserName(): void {
     this.store.dispatch(RootActions.changeUserName({username: 'ffff' + Math.random()}))
+  }
+
+  loadUsers(): void{
+    this.store.dispatch(loadUsers())
   }
 }
  
