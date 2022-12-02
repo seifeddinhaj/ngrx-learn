@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { User } from './models/user';
 // import { changeUserName, initAction } from './state/action';
 import { State } from './state/reducer';
-import { getUser } from './state/selectors';
+import { getLoadedError, getLoadedUsers, getUser, getUsers } from './state/selectors';
 
 import  {loadUsers, RootActions} from './state/action'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -17,12 +17,17 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent implements OnInit {
   title = 'starter';
   public user: Observable <User> = {} as any as Observable <User>;
+  public users$!: Observable <User[]>
+  public isLoaded$: Observable<boolean>
+  public errorMessage: Observable<HttpErrorResponse | Error | string>
   constructor(private store: Store<State>, private http: HttpClient) {}
   ngOnInit(): void {
     this.store.dispatch(RootActions.initApp());
     // this.user$ = this.store.select((state:User) =>state.root.user)
     this.user = this.store.pipe(select(getUser))
-    this.http.get('api/users').subscribe((val)=>console.log(val))
+    this.users$ = this.store.pipe(select(getUsers))
+    this.isLoaded$ = this.store.pipe(select(getLoadedUsers))
+    this.errorMessage = this.store.pipe(select(getLoadedError))
   }
   changeUserName(): void {
     this.store.dispatch(RootActions.changeUserName({username: 'ffff' + Math.random()}))

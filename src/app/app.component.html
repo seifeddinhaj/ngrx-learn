@@ -5,3 +5,33 @@
 <h4>UserName:{{ (user | async)?.username }}</h4>
 <h4>IsAdmin: {{(user | async)?.isAdmin}}</h4>
 <button class="btn btn-success"(click)="loadUsers()">load Users</button>
+
+<br>
+<ng-container *ngIf="(isLoaded$|async) === false">
+  <div class="spinner-border mt-5" style="width: 3rem; height: 3rem;" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</ng-container>
+<ng-container *ngIf="errorMessage|async">
+  <div class="alert alert-danger">
+    {{errorMessage|async}}
+  </div>
+</ng-container>
+<ng-container *ngIf="(isLoaded$|async) === true && (users$|async)?.length">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">name</th>
+        <th scope="col">isAdmin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of (users$|async)" >
+        <td>{{user.id }}</td>
+        <td>{{user.username }}</td>
+        <td>{{user.isAdmin }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>
